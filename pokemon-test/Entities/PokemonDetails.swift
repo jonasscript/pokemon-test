@@ -11,12 +11,27 @@ struct PokemonDetail: Codable {
     let weight: Int?
     let sprites: Sprites?
     let abilities: [PokemonAbility]
-    let moves: [PokemonMove]
+    let moves: [MoveElement]
+    
+    enum CodingKeys: String, CodingKey {
+        case types, weight, sprites, abilities, moves
+    }
+    
+    var activeMovements: [MoveElement] {
+        let activeMoves = moves.filter { moveElement in
+            return !moveElement.activeVersionGroup.isEmpty
+        }
+        if activeMoves.count > 4 {
+            return Array(activeMoves.prefix(4))
+        } else {
+            return activeMoves
+        }
+    }
 }
 
 // MARK: - AbilityElement
 struct PokemonAbility: Codable {
-    let ability: MoveClass
+    let ability: TypeClass
     let isHidden: Bool?
     let slot: Int?
 
@@ -28,7 +43,7 @@ struct PokemonAbility: Codable {
 }
 
 // MARK: - MoveClass
-struct MoveClass: Codable {
+struct TypeClass: Codable {
     let name: String?
     let url: String?
 }
@@ -36,7 +51,7 @@ struct MoveClass: Codable {
 // MARK: - Move
 struct PokemonMove: Codable, Identifiable {
     var id = UUID()
-    let move: MoveClass?
+    let move: TypeClass?
     
     enum CodingKeys: String, CodingKey {
         case move = "move"
@@ -69,10 +84,47 @@ struct Sprites: Codable {
 // MARK: - TypeElement
 struct PokemonType: Codable {
     let slot: Int?
-    let type: MoveClass?
+    let type: TypeClass?
     
     enum CodingKeys: String, CodingKey {
         case slot = "slot"
         case type = "type"
+    }
+}
+
+struct MoveElement: Codable {
+    var id = UUID()
+    let move: MoveMove?
+    let versionGroupDetails: [VersionGroupDetail]?
+    var activeVersionGroup: [VersionGroupDetail] {
+        guard let versionGroupDetails = versionGroupDetails else {
+            return []
+        }
+        return versionGroupDetails.filter { $0.levelLearnedAt ?? 0 > 0 }
+    }
+    enum CodingKeys: String, CodingKey {
+        case move
+        case versionGroupDetails = "version_group_details"
+    }
+}
+
+struct MoveMove: Codable {
+    let name: String?
+    let url: String?
+
+    enum CodingKeys: String, CodingKey {
+        case name, url
+    }
+}
+
+
+struct VersionGroupDetail: Codable {
+    let levelLearnedAt: Int?
+    let moveLearnMethod, versionGroup: TypeClass?
+
+    enum CodingKeys: String, CodingKey {
+        case levelLearnedAt = "level_learned_at"
+        case moveLearnMethod = "move_learn_method"
+        case versionGroup = "version_group"
     }
 }

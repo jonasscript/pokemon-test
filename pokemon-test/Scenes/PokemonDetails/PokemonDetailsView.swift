@@ -20,111 +20,97 @@ struct PokemonDetailsView: View {
     }
     
     var body: some View {
-        VStack {
-            AsyncImage(
-                url: pokemon.imageUrl
-            ) { image in
-                image.resizable()
-            } placeholder: {
-                Image(uiImage: .checkmark)
-                    .resizable()
-                    .padding()
-            }
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 120)
-            HStack {
-                Text("# \(pokemon.id?.description ?? "")")
-                Text("Nombre: \(pokemon.name)")
-            }
-            Text("Peso: \(viewModel.pokemonDetail?.weight ?? 0)")
-            Text("Habilidades:")
+        ScrollView {
             VStack {
-                ForEach(viewModel.pokemonDetail?.types ?? [], id: \.slot) { pokemonType in
-                    Text(pokemonType.type?.name ?? "")
+                CardView {
+                    VStack {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("# \(pokemon.id?.description ?? "")")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                Text("\(pokemon.name)")
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.blue)
+                            }
+                            Spacer()
+                            HStack {
+                                ForEach(viewModel.pokemonDetail?.types ?? [], id: \.slot) { pokemonType in
+                                    TagView(text: pokemonType.type?.name ?? "")
+                                }
+                            }
+                        }
+                        HStack {
+                            VStack(alignment: .leading, spacing: 10) {
+                                ForEach(viewModel.pokemonDetail?.abilities ?? [], id: \.slot) { abilitie in
+                                    StatView(statName: abilitie.ability.name ?? "", value: 50)
+                                }
+                            }
+                            Spacer()
+                            AsyncImage(
+                                url: pokemon.imageUrl
+                            ) { image in
+                                image.resizable()
+                                    .frame(width: 150, height: 150)
+                                    .aspectRatio(contentMode: .fill)
+                                    .clipped()
+                            } placeholder: {
+                                EmptyView()
+                            }
+                        }
+                    }
                 }
-            }
-            Text("Espíritus: ")
-            ScrollView(.horizontal) {
-                HStack {
-                    AsyncImage(
-                        url: URL(string: viewModel.pokemonDetail?.sprites?.backDefault ?? "")
-                    ) { image in
-                        image.resizable()
-                    } placeholder: {
+                CardView(content: {
+                    VStack(alignment: .center, spacing: 0) {
+                        Text("Información")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.blue)
+                            .padding()
+                        PhycisInfoView(height: "70 cm", weight: "\(viewModel.pokemonDetail?.weight?.description ?? "") Kg")
                     }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                    AsyncImage(
-                        url: URL(string: viewModel.pokemonDetail?.sprites?.backFemale ?? "")
-                    ) { image in
-                        image.resizable()
-                    } placeholder: {
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                    AsyncImage(
-                        url: URL(string: viewModel.pokemonDetail?.sprites?.backShiny ?? "")
-                    ) { image in
-                        image.resizable()
-                    } placeholder: {
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                    AsyncImage(
-                        url: URL(string: viewModel.pokemonDetail?.sprites?.backShinyFemale ?? "")
-                    ) { image in
-                        image.resizable()
-                    } placeholder: {
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                    AsyncImage(
-                        url: URL(string: viewModel.pokemonDetail?.sprites?.frontDefault ?? "")
-                    ) { image in
-                        image.resizable()
-                    } placeholder: {
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                    AsyncImage(
-                        url: URL(string: viewModel.pokemonDetail?.sprites?.frontFemale ?? "")
-                    ) { image in
-                        image.resizable()
-                    } placeholder: {
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                    AsyncImage(
-                        url: URL(string: viewModel.pokemonDetail?.sprites?.frontShiny ?? "")
-                    ) { image in
-                        image.resizable()
-                    } placeholder: {
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                    AsyncImage(
-                        url: URL(string: viewModel.pokemonDetail?.sprites?.frontShinyFemale ?? "")
-                    ) { image in
-                        image.resizable()
-                    } placeholder: {
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                }
-            }
-            Text("Movimientos: ")
-            HStack {
-                ForEach(viewModel.pokemonDetail?.moves ?? [], id: \.id) { pokemonType in
-                    Text(pokemonType.move?.name ?? "")
+                })
+                CardView {
+                    MoveListView(activeMovements: viewModel.pokemonDetail?.activeMovements ?? [])
                 }
             }
         }
         .onAppear() {
             viewModel.updateDetails(currentPokemon: pokemon)
         }
+        .navigationTitle(pokemon.name)
     }
 }
-//
-//#Preview {
-//    PokemonDetails(pokemon: PokemonModel(name: "", url: ""))
-//}
+
+struct MoveListView: View {
+    var activeMovements: [MoveElement]
+    var body: some View {
+        VStack {
+            HStack {
+                Text("Movimientos")
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .foregroundColor(.blue)
+                Spacer()
+                Button(action: {}) {
+                    Text("Ver todos")
+                        .foregroundColor(.blue)
+                }
+            }
+            .padding()
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(activeMovements, id: \.id) { pokemonType in
+                        TagView(text: pokemonType.move?.name ?? "")
+                    }
+                }
+                .padding()
+            }
+        }
+    }
+}
+
+#Preview {
+    PokemonDetailsView(pokemon: PokemonModel(name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon/2/"))
+}
