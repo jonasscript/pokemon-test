@@ -268,8 +268,8 @@
             filePath = "pokemon-test/Services/ServiceType.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
             landmarkName = "buildRequest(baseURL:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -469,7 +469,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "F724AC23-7C53-4AA9-B401-0E9C0B2C872C"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "pokemon-test/Scenes/List/PokemonListViewModel.swift"
@@ -523,8 +523,8 @@
             filePath = "pokemon-test/Services/ServiceType.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
             landmarkName = "buildRequest(baseURL:)"
             landmarkType = "7">
          </BreakpointContent>

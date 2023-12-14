@@ -10,7 +10,7 @@ import Foundation
 struct PokemonDetailRequest: APIServerRequest {
     
     typealias ResponseData = PokemonDetail
-    var method: String { return "GET" }
+    var method: HTTPMethod { return .get }
     var headers: [String: String]? { return ["Content-Type": "application/json"] }
     var queryItems: [URLQueryItem]?
     func body() throws -> Data? {

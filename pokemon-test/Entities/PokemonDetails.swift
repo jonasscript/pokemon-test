@@ -21,7 +21,7 @@ struct PokemonDetail: Codable {
         let activeMoves = moves.filter { moveElement in
             return !moveElement.activeVersionGroup.isEmpty
         }
-        if activeMoves.count > 4 {
+        if activeMoves.count > 6 {
             return Array(activeMoves.prefix(4))
         } else {
             return activeMoves

@@ -74,6 +74,11 @@ struct PokemonDetailsView: View {
                 CardView {
                     MoveListView(activeMovements: viewModel.pokemonDetail?.activeMovements ?? [])
                 }
+                if let spites = viewModel.pokemonDetail?.sprites {
+                    SpritesView(sprites: spites)
+                } else {
+                    EmptyView()
+                }
             }
         }
         .onAppear() {

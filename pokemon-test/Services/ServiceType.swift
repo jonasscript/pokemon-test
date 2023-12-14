@@ -8,6 +8,22 @@
 import Foundation
 import Combine
 
+public enum HTTPMethod {
+    
+    case post
+    case get
+    
+    var description: String {
+        switch self {
+        case .get:
+            return "GET"
+        case .post:
+            return "POST"
+        }
+    }
+    
+}
+
 protocol ServiceType {
     
     var session: URLSession { get }
@@ -20,7 +36,7 @@ protocol ServiceType {
 protocol APIServerRequest {
     
     associatedtype ResponseData: Decodable
-    var method: String { get }
+    var method: HTTPMethod { get }
     var headers: [String: String]? { get }
     var queryItems: [URLQueryItem]? { get }
     func body() throws -> Data?
@@ -36,7 +52,7 @@ extension APIServerRequest {
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
         components.queryItems = queryItems
         var request = URLRequest(url: components.url!)
-        request.httpMethod = method
+        request.httpMethod = method.description
         request.allHTTPHeaderFields = headers
         request.httpBody = try body()
         return request
